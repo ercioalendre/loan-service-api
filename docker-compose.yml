@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  loan-service-api:
+    container_name: loan-service-api
+    image: loan-service-api-image
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:docker@postgres:5432/db_loan_service?schema=public
+    networks:
+      - loan-service-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - postgres
+   
+  postgres:
+    container_name: loan-service-postgres
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=docker
+    networks:
+      - loan-service-network
+    restart: unless-stopped
+
+networks:
+  loan-service-network:
+    driver: bridge

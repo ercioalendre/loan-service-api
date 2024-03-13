@@ -1,0 +1,17 @@
+export const LoanApplicationSortableFieldList = Object.freeze([
+  'applicantId',
+  'requestedAmount',
+  'loanPurpose',
+  'collateralDescription',
+  'collateralValue',
+  'interestRate',
+  'loanTerm',
+  'status',
+  'isActive',
+  'createdAt',
+  'createdBy',
+  'updatedAt',
+  'updatedBy',
+  'isActiveChangedAt',
+  'isActiveChangedBy',
+]);

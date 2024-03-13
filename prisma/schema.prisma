@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @db.Uuid
+  fullName          String    @db.VarChar
+  email             String?   @unique @db.VarChar
+  phone             String?   @unique @db.VarChar
+  role              String    @db.VarChar
+  password          String    @db.VarChar
+  token             String?   @unique @db.VarChar
+  isActive          Boolean   @db.Boolean
+  createdAt         DateTime  @db.Timestamp(6)
+  createdBy         String?   @db.Uuid
+  updatedAt         DateTime? @db.Timestamp(6)
+  updatedBy         String?   @db.Uuid
+  isActiveChangedAt DateTime? @db.Timestamp(6)
+  isActiveChangedBy String?   @db.Uuid
+
+  userRelatedToCreatedBy                        User?             @relation("userRelatedToCreatedByForUser", fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToUpdatedBy                        User?             @relation("userRelatedToUpdatedByForUser", fields: [updatedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToStatusChangedBy                  User?             @relation("userRelatedToStatusChangedByForUser", fields: [isActiveChangedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToCreatedByInUser                  User[]            @relation("userRelatedToCreatedByForUser")
+  userRelatedToUpdatedByInUser                  User[]            @relation("userRelatedToUpdatedByForUser")
+  userRelatedToStatusChangedByInUser            User[]            @relation("userRelatedToStatusChangedByForUser")
+  userRelatedToApplicantIdInLoanApplication     LoanApplication[] @relation("userRelatedToApplicantIdForLoanApplication")
+  userRelatedToCreatedByInLoanApplication       LoanApplication[] @relation("userRelatedToCreatedByForLoanApplication")
+  userRelatedToUpdatedByInLoanApplication       LoanApplication[] @relation("userRelatedToUpdatedByForLoanApplication")
+  userRelatedToStatusChangedByInLoanApplication LoanApplication[] @relation("userRelatedToStatusChangedByForLoanApplication")
+}
+
+model LoanApplication {
+  id                    String    @id @db.Uuid
+  applicantId           String?   @db.Uuid
+  requestedAmount       Float     @db.Real
+  loanPurpose           String    @db.VarChar
+  collateralDescription String?   @db.VarChar
+  collateralValue       Float?    @db.Real
+  interestRate          Float     @db.Real
+  loanTerm              String    @db.VarChar
+  status                String    @db.VarChar
+  isActive              Boolean   @db.Boolean
+  createdAt             DateTime  @db.Timestamp(6)
+  createdBy             String?   @db.Uuid
+  updatedAt             DateTime? @db.Timestamp(6)
+  updatedBy             String?   @db.Uuid
+  isActiveChangedAt     DateTime? @db.Timestamp(6)
+  isActiveChangedBy     String?   @db.Uuid
+
+  userRelatedToApplicantId     User? @relation("userRelatedToApplicantIdForLoanApplication", fields: [applicantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToCreatedBy       User? @relation("userRelatedToCreatedByForLoanApplication", fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToUpdatedBy       User? @relation("userRelatedToUpdatedByForLoanApplication", fields: [updatedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRelatedToStatusChangedBy User? @relation("userRelatedToStatusChangedByForLoanApplication", fields: [isActiveChangedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
